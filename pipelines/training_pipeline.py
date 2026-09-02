@@ -10,6 +10,7 @@ from steps.feature_engineering_step import feature_engineering_step
 from steps.outlier_detection_step import outlier_detection_step
 from steps.model_building_step import model_building_step
 from steps.data_splitter_step import data_splitting_step
+from steps.model_evaluator_step import model_evaluator_step
 
 # pyrefly: ignore [missing-import]
 from zenml import pipeline, Model
@@ -44,13 +45,21 @@ def ml_piepline(file_path: str):
     # Outlier Detection
     clean_data = outlier_detection_step(engineered_data, column_name="SalePrice")
 
+    # the data splitting
 
-    # the data splitting 
+    X_train, X_test, y_train, y_test = data_splitting_step(
+        df=clean_data, target_column="SalePrice"
+    )
 
-    X_train, X_test, y_train, y_test = data_splitting_step(df=clean_data, target_column="SalePrice")
-
-    # model building 
+    # model building
 
     model = model_building_step(X_train=X_train, y_train=y_train)
 
-    
+    # model evaluation
+
+    evaluation_metrics, mse = model_evaluator_step(
+        X_test=X_test, y_test=y_test, trained_model=model
+    )
+
+
+    return model
