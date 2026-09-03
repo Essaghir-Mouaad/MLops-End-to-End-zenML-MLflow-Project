@@ -1,4 +1,3 @@
-from pipelines import training_pipeline
 from typing import Annotated
 import logging
 import pandas as pd
@@ -99,6 +98,14 @@ def model_building_step(
         pipeline.fit(X_train, y_train)
 
         logging.info("Linear Regression Model training completed")
+
+        # Explicitly log the model artifact so ZenML model deployer can locate and deploy it
+        mlflow.sklearn.log_model(
+            sk_model=pipeline,
+            artifact_path="model",
+            input_example=X_train.iloc[:5],
+            serialization_format="cloudpickle",
+        )
 
         # log the columns that the model expect
 
