@@ -21,7 +21,7 @@ from zenml import pipeline, Model
         name="house_price_prediction",
     )
 )
-def ml_piepline(file_path: str):
+def ml_pipeline(file_path: str):
     """
     This pipeline ingest the data from the file path and preprocess it
 
